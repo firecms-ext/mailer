@@ -18,7 +18,7 @@ return [
 
     'default' => env('MAIL_MAILER', 'smtp'),
     'charset' => env('MAIL_CHARSET', PHPMailer::CHARSET_UTF8),
-    'debug' => env('MAIL_DEBUG', SMTP::DEBUG_SERVER),
+    'debug' => env('MAIL_DEBUG', SMTP::DEBUG_OFF),
 
     'mailers' => [
         'smtp' => [
