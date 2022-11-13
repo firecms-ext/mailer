@@ -21,11 +21,12 @@
   },
   "require": {
     "php": ">=8.0",
-    "hyperf/framework": "~v2.2",
-    "hyperf/di": "~v2.2",
-    "hyperf/cache":"~v2.2",
-    "hyperf/utils": "~v2.2",
+    "hyperf/cache": "~v2.2",
     "hyperf/command": "~v2.2",
+    "hyperf/devtool": "~v2.2",
+    "hyperf/di": "~v2.2",
+    "hyperf/framework": "~v2.2",
+    "hyperf/utils": "~v2.2",
     "phpmailer/phpmailer": "^6.5"
   },
   "require-dev": {

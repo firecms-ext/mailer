@@ -1,0 +1,20 @@
+<?php
+
+declare(strict_types=1);
+
+namespace %NAMESPACE%;
+
+use FirecmsExt\Mailer\Mailable;
+
+class %CLASS% extends Mailable
+{
+    public function __construct(array $data)
+    {
+    }
+
+    public function build(): void
+    {
+        $this->subject($this->data['subject'] ?? '')
+            ->html($this->data['content'] ?? '');
+    }
+}
