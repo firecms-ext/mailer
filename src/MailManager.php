@@ -101,11 +101,12 @@ class MailManager implements MailManagerInterface
         $mailer->SMTPDebug = $config['debug'] ?? SMTP::DEBUG_SERVER;
         $mailer->isSMTP();
         $mailer->SMTPAuth = true;
-        $mailer->Host = $config['host'] ?? env('MAIL_HOST');
-        $mailer->Username = $config['username'] ?? env('MAIL_USERNAME');
-        $mailer->Password = $config['password'] ?? env('MAIL_PASSWORD');
+        $mailer->Host = $config['host'];
+        $mailer->Username = $config['username'];
+        $mailer->Password = $config['password'];
         $mailer->SMTPSecure = $config['encryption'] ?? PHPMailer::ENCRYPTION_SMTPS;
         $mailer->Port = $config['port'] ?? 465;
+
         $this->mailers['smtp'] = $mailer;
 
         return $mailer;
