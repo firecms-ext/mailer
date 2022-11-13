@@ -70,12 +70,15 @@ class MailManager implements MailManagerInterface
             default => $this->createSmtpTransport($config),
         };
 
-        // 设置全局 From
+        // 全局设置
         try {
             $this->mailers[$name]->setFrom(
                 $this->config->get('mailer.from.address'),
                 $this->config->get('mailer.from.name')
             );
+            $this->mailers[$name]->CharSet = $this->config->get('mailer.charset', PHPMailer::CHARSET_UTF8);
+            $this->mailers[$name]->SMTPDebug = $this->config->get('mailer.debug', SMTP::DEBUG_SERVER);
+
         } catch (Exception $e) {
             throw new \Exception($e->getMessage());
         }
@@ -97,15 +100,13 @@ class MailManager implements MailManagerInterface
     {
         $mailer = new PHPMailer();
 
-        $mailer->CharSet = $config['charset'] ?? PHPMailer::CHARSET_UTF8;
-        $mailer->SMTPDebug = $config['debug'] ?? SMTP::DEBUG_SERVER;
         $mailer->isSMTP();
         $mailer->SMTPAuth = true;
         $mailer->Host = $config['host'];
         $mailer->Username = $config['username'];
         $mailer->Password = $config['password'];
-        $mailer->SMTPSecure = $config['encryption'] ?? PHPMailer::ENCRYPTION_SMTPS;
-        $mailer->Port = $config['port'] ?? 465;
+        $mailer->SMTPSecure = $config['encryption'];
+        $mailer->Port = $config['port'];
 
         $this->mailers['smtp'] = $mailer;
 
