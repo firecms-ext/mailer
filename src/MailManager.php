@@ -9,10 +9,8 @@ declare(strict_types=1);
  * @contact  zhimengxingyun@klmis.cn
  * @license  https://github.com/firecms-ext/mailer/blob/master/LICENSE
  */
-
 namespace FirecmsExt\Mailer;
 
-use FirecmsExt\Mailer\Contracts\MailableInterface;
 use FirecmsExt\Mailer\Contracts\MailerInterface;
 use FirecmsExt\Mailer\Contracts\MailManagerInterface;
 use Hyperf\Contract\ConfigInterface;
@@ -22,7 +20,6 @@ use PHPMailer\PHPMailer\SMTP;
 
 class MailManager implements MailManagerInterface
 {
-
     protected array $mailers = [];
 
     protected ConfigInterface $config;
@@ -41,10 +38,16 @@ class MailManager implements MailManagerInterface
     {
         $name = $name ?: $this->getDefaultDriver();
 
-        return new Mailer($config
+        return new Mailer(
+            $config
             ? $this->resolve($name, array_merge($this->getConfig($name), $config))
             : $this->get($name)
         );
+    }
+
+    public function getDefaultDriver(): string
+    {
+        return $this->config->get('mailer.driver', $this->config->get('mailer.default'));
     }
 
     protected function get(string $name): PHPMailer
@@ -78,17 +81,11 @@ class MailManager implements MailManagerInterface
             );
             $this->mailers[$name]->CharSet = $this->config->get('mailer.charset', PHPMailer::CHARSET_UTF8);
             $this->mailers[$name]->SMTPDebug = $this->config->get('mailer.debug', SMTP::DEBUG_SERVER);
-
         } catch (Exception $e) {
             throw new \Exception($e->getMessage());
         }
 
         return $this->mailers[$name];
-    }
-
-    public function getDefaultDriver(): string
-    {
-        return $this->config->get('mailer.driver', $this->config->get('mailer.default'));
     }
 
     protected function getConfig(string $name): ?array

@@ -9,7 +9,6 @@ declare(strict_types=1);
  * @contact  zhimengxingyun@klmis.cn
  * @license  https://github.com/firecms-ext/mailer/blob/master/LICENSE
  */
-
 namespace FirecmsExt\Mailer;
 
 use FirecmsExt\Mailer\Contracts\MailableInterface;
@@ -52,7 +51,7 @@ class Mailable implements MailableInterface
     public string $body = '';
 
     /**
-     * 主题
+     * 主题.
      */
     public function subject(string $subject): static
     {
@@ -62,7 +61,7 @@ class Mailable implements MailableInterface
     }
 
     /**
-     * 内容
+     * 内容.
      */
     public function body(string $body): static
     {
@@ -105,5 +104,4 @@ class Mailable implements MailableInterface
 
         return $this;
     }
-
 }
