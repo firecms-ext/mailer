@@ -66,6 +66,8 @@ class MailManager implements MailManagerInterface
             default => $this->createSmtpTransport($config),
         };
 
+        $this->mailers[$name]->setFrom($this->config->get('mailer.from.address'), $this->config->get('mailer.from.name'));
+
         return $this->mailers[$name];
     }
 
@@ -89,7 +91,7 @@ class MailManager implements MailManagerInterface
         $mailer = new PHPMailer();
 
         $mailer->CharSet = $config['charset'] ?? PHPMailer::CHARSET_UTF8;
-        $mailer->SMTPDebug = $config['charset'] ?? SMTP::DEBUG_OFF;
+        $mailer->SMTPDebug = $config['debug'] ?? SMTP::DEBUG_SERVER;
         $mailer->isSMTP();
         $mailer->SMTPAuth = true;
         $mailer->Host = $config['host'] ?? env('MAIL_HOST');

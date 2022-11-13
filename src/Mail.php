@@ -16,10 +16,10 @@ use FirecmsExt\Mailer\Contracts\MailManagerInterface;
 use Hyperf\Utils\ApplicationContext;
 
 /**
- * @method static MailManagerInterface to(mixed $users)
- * @method static MailManagerInterface cc(mixed $users)
- * @method static MailManagerInterface bcc(mixed $users)
- * @method static void send(MailableInterface $mailable)
+ * @method static static to(mixed $address)
+ * @method static static cc(mixed $address)
+ * @method static static bcc(mixed $address)
+ * @method static static send(MailableInterface $mailable)
  */
 abstract class Mail
 {
