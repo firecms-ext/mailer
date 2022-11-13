@@ -9,6 +9,7 @@ declare(strict_types=1);
  * @contact  zhimengxingyun@klmis.cn
  * @license  https://github.com/firecms-ext/mailer/blob/master/LICENSE
  */
+
 namespace FirecmsExt\Mailer;
 
 use FirecmsExt\Mailer\Contracts\MailerInterface;
@@ -40,8 +41,8 @@ class MailManager implements MailManagerInterface
 
         return new Mailer(
             $config
-            ? $this->resolve($name, array_merge($this->getConfig($name), $config))
-            : $this->get($name)
+                ? $this->resolve($name, array_merge($this->getConfig($name), $config))
+                : $this->get($name)
         );
     }
 
@@ -98,6 +99,7 @@ class MailManager implements MailManagerInterface
         $mailer = new PHPMailer();
 
         $mailer->isSMTP();
+        $mailer->isHTML();
         $mailer->SMTPAuth = true;
         $mailer->Host = $config['host'];
         $mailer->Username = $config['username'];
