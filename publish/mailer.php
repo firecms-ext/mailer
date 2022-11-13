@@ -36,7 +36,7 @@ return [
     | sending an e-mail. You will specify which one you are using for your
     | mailers below. You are free to add additional mailers as required.
     |
-    | Supported: "smtp", "mail", "sendmail", "qmail", "log"
+    | Supported: "smtp", "mail", "sendmail", "qmail"
     |
     */
 
@@ -56,10 +56,6 @@ return [
         ],
 
         'qmail' => [
-        ],
-
-        'log' => [
-            'channel' => env('MAIL_LOG_CHANNEL'),
         ],
     ],
 
