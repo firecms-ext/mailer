@@ -51,23 +51,4 @@ class Mailable implements MailableInterface
      */
     public string $body = '';
 
-    public function to(object|array|string $address, ?string $name = null): static
-    {
-        return $this;
-    }
-
-    public function cc(object|array|string $address, ?string $name = null): static
-    {
-        return $this;
-    }
-
-    public function bcc(object|array|string $address, ?string $name = null): static
-    {
-        return $this;
-    }
-
-    public function send(MailerInterface $mailer)
-    {
-        // TODO: Implement send() method.
-    }
 }

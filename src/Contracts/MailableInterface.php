@@ -9,6 +9,7 @@ declare(strict_types=1);
  * @contact  zhimengxingyun@klmis.cn
  * @license  https://github.com/firecms-ext/mailer/blob/master/LICENSE
  */
+
 namespace FirecmsExt\Mailer\Contracts;
 
 /**
@@ -16,11 +17,4 @@ namespace FirecmsExt\Mailer\Contracts;
  */
 interface MailableInterface
 {
-    public function to(object|array|string $address, ?string $name = null): static;
-
-    public function cc(object|array|string $address, ?string $name = null): static;
-
-    public function bcc(object|array|string $address, ?string $name = null): static;
-
-    public function send(MailerInterface $mailer);
 }
