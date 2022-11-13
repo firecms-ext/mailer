@@ -1,10 +1,20 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of FirecmsExt Mailer.
+ *
+ * @link     https://www.klmis.cn
+ * @document https://www.klmis.cn
+ * @contact  zhimengxingyun@klmis.cn
+ * @license  https://github.com/firecms-ext/mailer/blob/master/LICENSE
+ */
+
 namespace FirecmsExt\Mailer;
 
 use FirecmsExt\Mailer\Contracts\MailableInterface;
-use FirecmsExt\Mailer\Contracts\MailerInterface;
 use Hyperf\Utils\Traits\Conditionable;
+use PHPMailer\PHPMailer\PHPMailer;
 
 class PendingMail
 {
@@ -13,7 +23,7 @@ class PendingMail
     /**
      * 邮寄者的实例。
      */
-    protected MailerInterface $mailer;
+    protected PHPMailer $mailer;
 
     /**
      * 邮件的“收件人”。
@@ -33,7 +43,7 @@ class PendingMail
     /**
      * 创建一个新的可发送邮件实例。
      */
-    public function __construct(MailerInterface $mailer)
+    public function __construct(PHPMailer $mailer)
     {
         $this->mailer = $mailer;
     }
@@ -79,32 +89,39 @@ class PendingMail
      */
     public function send(MailableInterface $mailable): mixed
     {
-        return $this->mailer->send($this->fill($mailable));
-    }
+        $this->fill($mailable);
 
-    /**
-     * 将给定的可邮件推入队列。
-     */
-    public function queue(MailableInterface $mailable): bool
-    {
-        return $this->mailer->queue($this->fill($mailable));
-    }
-
-    /**
-     * 在(n)秒后交付排队的消息。
-     */
-    public function later(\DateInterval|\DateTimeInterface|int $delay, MailableInterface $mailable): mixed
-    {
-        return $this->mailer->later($delay, $this->fill($mailable));
+        return $this->mailer->send();
     }
 
     /**
      * 在可邮寄邮件中填写地址。
      */
-    protected function fill(MailableInterface $mailable): Mailable
+    protected function fill(MailableInterface $mailable)
     {
-        return $mailable->to($this->to)
-            ->cc($this->cc)
-            ->bcc($this->bcc);
+        foreach ($this->to as $item) {
+            if (is_array($item)) {
+                $this->mailer->addAddress($item['address'], $item['name'] ?? '');
+            } elseif (is_string($item) && $item) {
+                $this->mailer->addAddress($item);
+            }
+        }
+        foreach ($this->cc as $item) {
+            if (is_array($item)) {
+                $this->mailer->addCC($item['address'], $item['name'] ?? '');
+            } elseif (is_string($item) && $item) {
+                $this->mailer->addCC($item);
+            }
+        }
+
+        foreach ($this->bcc as $item) {
+            if (is_array($item)) {
+                $this->mailer->addBCC($item['address'], $item['name'] ?? '');
+            } elseif (is_string($item) && $item) {
+                $this->mailer->addBCC($item);
+            }
+        }
+
+        return $this;
     }
 }

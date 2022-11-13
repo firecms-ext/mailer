@@ -1,10 +1,21 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of FirecmsExt Mailer.
+ *
+ * @link     https://www.klmis.cn
+ * @document https://www.klmis.cn
+ * @contact  zhimengxingyun@klmis.cn
+ * @license  https://github.com/firecms-ext/mailer/blob/master/LICENSE
+ */
 namespace FirecmsExt\Mailer;
 
 use FirecmsExt\Mailer\Contracts\MailManagerInterface;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\ContainerInterface;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
 
 class MailManager implements MailManagerInterface
 {
@@ -12,9 +23,10 @@ class MailManager implements MailManagerInterface
 
     protected ConfigInterface $config;
 
-    public function __construct(ContainerInterface $container, ConfigInterface $config)
+    protected array $mailers = [];
+
+    public function __construct(ConfigInterface $config)
     {
-        $this->container = $container;
         $this->config = $config;
     }
 
@@ -23,12 +35,13 @@ class MailManager implements MailManagerInterface
         return $this->mailer()->{$method}(...$parameters);
     }
 
-
-    public function mailer(?string $name = null): Mailer
+    public function mailer(?string $name = null, ?array $config = null): PHPMailer
     {
         $name = $name ?: $this->getDefaultDriver();
 
-        return $this->mailers[$name] = $this->get($name);
+        return $config
+            ? $this->resolve($name, array_merge($this->getConfig($name), $config))
+            : $this->get($name);
     }
 
     public function getDefaultDriver(): string
@@ -36,35 +49,83 @@ class MailManager implements MailManagerInterface
         return $this->config->get('mailer.driver', $this->config->get('mailer.default'));
     }
 
-    protected function get(string $name): Mailer
+    public function setConfig(string $name, mixed $value): array
+    {
+        return $this->config->set("mailer.{$name}", $value);
+    }
+
+    protected function getConfig(string $name): ?array
+    {
+        return $this->config->get("mailer.mailers.{$name}");
+    }
+
+    protected function createSmtpTransport(array $config): PHPMailer
+    {
+        $mailer = new PHPMailer();
+
+        $mailer->CharSet = $config['charset'] ?? PHPMailer::CHARSET_UTF8;
+        $mailer->SMTPDebug = $config['charset'] ?? SMTP::DEBUG_OFF;
+        $mailer->isSMTP();
+        $mailer->SMTPAuth = true;
+        $mailer->Host = $config['host'] ?? env('MAIL_HOST');
+        $mailer->Username = $config['username'] ?? env('MAIL_USERNAME');
+        $mailer->Password = $config['password'] ?? env('MAIL_PASSWORD');
+        $mailer->SMTPSecure = $config['encryption'] ?? PHPMailer::ENCRYPTION_SMTPS;
+        $mailer->Port = $config['port'] ?? 465;
+        $this->mailers['smtp'] = $mailer;
+
+        return $mailer;
+    }
+
+    protected function get(string $name): PHPMailer
     {
         return $this->mailers[$name] ?? $this->resolve($name);
     }
 
-    protected function resolve(string $name): Mailer
+    protected function resolve(string $name, ?array $config = null): PHPMailer
     {
-        $config = $this->getConfig($name);
+        $config = $config ?: $this->getConfig($name);
 
         if (is_null($config)) {
             throw new \InvalidArgumentException("MailerInterface [{$name}] is not defined.");
         }
 
-        // 一旦我们创建了邮件实例，我们将设置一个容器实例
-        // 发送邮件。这允许我们通过容器解析 mailer 类
-        // 最大可测试性的类，而不是传递闭包。
-        $mailer = new Mailer(
-            $name,
-            $this->createSymfonyTransport($config),
-            $this->container->get(EventDispatcherInterface::class)
-        );
+        $this->mailers[$name] = match ($name) {
+            'mail' => $this->createMailTransport($config),
+            'qmail' => $this->createQMailTransport($config),
+            'sendmail' => $this->createSendMailTransport($config),
+            default => $this->createSmtpTransport($config),
+        };
 
-        // 接下来我们将设置这个邮件上的所有全局地址，这允许
-        // 方便统一所有"from"地址以及方便调试
-        // 发送的消息，因为这些将发送到一个单一的电子邮件地址。
+        return $this->mailers[$name];
+    }
 
-        foreach (['from', 'reply_to', 'to', 'return_path'] as $type) {
-            $this->setGlobalAddress($mailer, $config, $type);
-        }
+    protected function createMailTransport(array $config): PHPMailer
+    {
+        $mailer = new PHPMailer();
+        $mailer->isMail();
+
+        $this->mailers['mail'] = $mailer;
+
+        return $mailer;
+    }
+
+    protected function createQMailTransport(array $config): PHPMailer
+    {
+        $mailer = new PHPMailer();
+        $mailer->isQmail();
+
+        $this->mailers['qmail'] = $mailer;
+
+        return $mailer;
+    }
+
+    protected function createSendMailTransport(array $config): PHPMailer
+    {
+        $mailer = new PHPMailer();
+        $mailer->isSendmail();
+
+        $this->mailers['sendmail'] = $mailer;
 
         return $mailer;
     }
