@@ -11,6 +11,8 @@ declare(strict_types=1);
  */
 namespace FirecmsExt\Mailer;
 
+use FirecmsExt\Mailer\Commands\GenMailerCommand;
+
 class ConfigProvider
 {
     public function __invoke(): array
@@ -19,6 +21,7 @@ class ConfigProvider
             'dependencies' => [
             ],
             'commands' => [
+                GenMailerCommand::class
             ],
             'publish' => [
                 [
