@@ -20,4 +20,6 @@ interface MailableInterface
     public function subject(string $subject): static;
 
     public function body(string $body): static;
+
+    public function build(): void;
 }

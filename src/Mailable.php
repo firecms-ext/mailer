@@ -65,4 +65,9 @@ class Mailable implements MailableInterface
 
         return $this;
     }
+
+    public function build(): void
+    {
+
+    }
 }

@@ -139,6 +139,8 @@ class Mailer implements MailerInterface
     protected function fill(MailableInterface $mailable): static
     {
         try {
+            $mailable->build();
+
             return $this->to($mailable->to)
                 ->cc($mailable->cc)
                 ->bcc($mailable->bcc)
