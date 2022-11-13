@@ -9,9 +9,12 @@ declare(strict_types=1);
  * @contact  zhimengxingyun@klmis.cn
  * @license  https://github.com/firecms-ext/mailer/blob/master/LICENSE
  */
+
 namespace FirecmsExt\Mailer\Contracts;
+
+use PHPMailer\PHPMailer\PHPMailer;
 
 interface MailManagerInterface
 {
-    public function mailer(string $name = null): MailerInterface;
+    public function mailer(?string $name = null, ?array $config = null): PHPMailer;
 }
