@@ -45,7 +45,7 @@ class Mailer implements MailerInterface
      * 目标
      * @throws \Exception
      */
-    public function to(mixed $address): static
+    public function to(mixed $address, string $name = ''): static
     {
         if (empty($address)) {
             return $this;
@@ -53,15 +53,15 @@ class Mailer implements MailerInterface
 
         try {
             if (is_string($address)) {
-                $this->mailer->addAddress($address);
+                $this->mailer->addAddress($address, $name);
             } elseif (is_array($address)) {
                 foreach ($address as $item) {
                     if (is_array($item)) {
-                        $this->mailer->addAddress($item['address'] ?? $item['email'], $item['name'] ?? '');
+                        $this->mailer->addAddress($item['address'] ?? $item['email'] ?? reset($item), $item['name'] ?? $name);
                     } elseif (is_object($item)) {
-                        $this->mailer->addAddress(@$item->address ?: @$item->email, @$item->name ?: '');
+                        $this->mailer->addAddress(@$item->address ?: @$item->email, @$item->name ?: $name);
                     } elseif (is_string($item)) {
-                        $this->mailer->addAddress($item);
+                        $this->mailer->addAddress($item, $name);
                     }
                 }
             }
@@ -76,7 +76,7 @@ class Mailer implements MailerInterface
      * 抄送
      * @throws \Exception
      */
-    public function cc(mixed $address): static
+    public function cc(mixed $address, string $name = ''): static
     {
         if (empty($address)) {
             return $this;
@@ -84,15 +84,15 @@ class Mailer implements MailerInterface
 
         try {
             if (is_string($address)) {
-                $this->mailer->addCC($address);
+                $this->mailer->addCC($address, $name);
             } elseif (is_array($address)) {
                 foreach ($address as $item) {
                     if (is_array($item)) {
-                        $this->mailer->addCC($item['address'] ?? $item['email'], $item['name'] ?? '');
+                        $this->mailer->addCC($item['address'] ?? $item['email'] ?? reset($item), $item['name'] ?? $name);
                     } elseif (is_object($item)) {
-                        $this->mailer->addCC(@$item->address ?: @$item->email, @$item->name ?: '');
+                        $this->mailer->addCC(@$item->address ?: @$item->email, @$item->name ?: $name);
                     } elseif (is_string($item)) {
-                        $this->mailer->addCC($item);
+                        $this->mailer->addCC($item, $name);
                     }
                 }
             }
@@ -107,7 +107,7 @@ class Mailer implements MailerInterface
      * 抄送（加密）
      * @throws \Exception
      */
-    public function bcc(mixed $address): static
+    public function bcc(mixed $address, string $name = ''): static
     {
         if (empty($address)) {
             return $this;
@@ -115,15 +115,15 @@ class Mailer implements MailerInterface
 
         try {
             if (is_string($address)) {
-                $this->mailer->addBCC($address);
+                $this->mailer->addBCC($address, $name);
             } elseif (is_array($address)) {
                 foreach ($address as $item) {
                     if (is_array($item)) {
-                        $this->mailer->addBCC($item['address'] ?? $item['email'], $item['name'] ?? '');
+                        $this->mailer->addBCC($item['address'] ?? $item['email'] ?? reset($item), $item['name'] ?? $name);
                     } elseif (is_object($item)) {
-                        $this->mailer->addBCC(@$item->address ?: @$item->email, @$item->name ?: '');
+                        $this->mailer->addBCC(@$item->address ?: @$item->email, @$item->name ?: $name);
                     } elseif (is_string($item)) {
-                        $this->mailer->addBCC($item);
+                        $this->mailer->addBCC($item, $name);
                     }
                 }
             }
@@ -138,7 +138,7 @@ class Mailer implements MailerInterface
      * 回复
      * @throws \Exception
      */
-    public function replyTo(mixed $address): static
+    public function replyTo(mixed $address, string $name = ''): static
     {
         if (empty($address)) {
             return $this;
@@ -146,15 +146,15 @@ class Mailer implements MailerInterface
 
         try {
             if (is_string($address)) {
-                $this->mailer->addReplyTo($address);
+                $this->mailer->addReplyTo($address, $name);
             } elseif (is_array($address)) {
                 foreach ($address as $item) {
                     if (is_array($item)) {
-                        $this->mailer->addReplyTo($item['address'] ?? $item['email'], $item['name'] ?? '');
+                        $this->mailer->addReplyTo($item['address'] ?? $item['email'] ?? reset($item), $item['name'] ?? $name);
                     } elseif (is_object($item)) {
-                        $this->mailer->addReplyTo(@$item->address ?: @$item->email, @$item->name ?: '');
+                        $this->mailer->addReplyTo(@$item->address ?: @$item->email, @$item->name ?: $name);
                     } elseif (is_string($item)) {
-                        $this->mailer->addReplyTo($item);
+                        $this->mailer->addReplyTo($item, $name);
                     }
                 }
             }
@@ -168,7 +168,7 @@ class Mailer implements MailerInterface
     /**
      * @throws \Exception
      */
-    public function setFrom(mixed $address): static
+    public function from(mixed $address, string $name = ''): static
     {
         if (empty($address)) {
             return $this;
@@ -176,17 +176,9 @@ class Mailer implements MailerInterface
 
         try {
             if (is_string($address)) {
-                $this->mailer->setFrom($address);
+                $this->mailer->setFrom($address, $name);
             } elseif (is_array($address)) {
-                foreach ($address as $item) {
-                    if (is_array($item)) {
-                        $this->mailer->setFrom($item['address'] ?? $item['email'], $item['name'] ?? '');
-                    } elseif (is_object($item)) {
-                        $this->mailer->setFrom(@$item->address ?: @$item->email, @$item->name ?: '');
-                    } elseif (is_string($item)) {
-                        $this->mailer->setFrom($item);
-                    }
-                }
+                $this->mailer->setFrom($address['address'] ?? $address['email'] ?? reset($address), $address['name'] ?? $name);
             }
         } catch (Exception $e) {
             throw new \Exception($e->getMessage());
@@ -223,13 +215,15 @@ class Mailer implements MailerInterface
     {
         try {
             // 绑定数据
-            $mailable->build();
+            if (method_exists($mailable, 'build')) {
+                $mailable->build();
+            }
             //填充数据
             return $this->to($mailable->to)
                 ->cc($mailable->cc)
                 ->bcc($mailable->bcc)
                 ->replyTo($mailable->replyTo)
-                ->setFrom($mailable->from)
+                ->from($mailable->from)
                 ->subject($mailable->subject)
                 ->body($mailable->body);
         } catch (\Exception $e) {

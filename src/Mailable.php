@@ -51,7 +51,9 @@ class Mailable implements MailableInterface
      */
     public string $body = '';
 
-
+    /**
+     * 主题
+     */
     public function subject(string $subject): static
     {
         $this->subject = $subject;
@@ -59,6 +61,9 @@ class Mailable implements MailableInterface
         return $this;
     }
 
+    /**
+     * 内容
+     */
     public function body(string $body): static
     {
         $this->body = $body;
@@ -66,8 +71,39 @@ class Mailable implements MailableInterface
         return $this;
     }
 
-    public function build(): void
+    public function to(mixed $address, ?string $name = null): static
     {
+        $this->to[] = compact('address', 'name');
 
+        return $this;
     }
+
+    public function cc(mixed $address, ?string $name = null): static
+    {
+        $this->cc[] = compact('address', 'name');
+
+        return $this;
+    }
+
+    public function bcc(mixed $address, ?string $name = null): static
+    {
+        $this->bcc[] = compact('address', 'name');
+
+        return $this;
+    }
+
+    public function replyTo(mixed $address, ?string $name = null): static
+    {
+        $this->replyTo[] = compact('address', 'name');
+
+        return $this;
+    }
+
+    public function from(mixed $address, ?string $name = null): static
+    {
+        $this->from = compact('address', 'name');
+
+        return $this;
+    }
+
 }
