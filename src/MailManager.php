@@ -16,6 +16,7 @@ use FirecmsExt\Mailer\Contracts\MailableInterface;
 use FirecmsExt\Mailer\Contracts\MailerInterface;
 use FirecmsExt\Mailer\Contracts\MailManagerInterface;
 use Hyperf\Contract\ConfigInterface;
+use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 
@@ -51,6 +52,9 @@ class MailManager implements MailManagerInterface
         return $this->mailers[$name] ?? $this->resolve($name);
     }
 
+    /**
+     * @throws \Exception
+     */
     protected function resolve(string $name, ?array $config = null): PHPMailer
     {
         $config = $config ?: $this->getConfig($name);
@@ -66,9 +70,15 @@ class MailManager implements MailManagerInterface
             default => $this->createSmtpTransport($config),
         };
 
-        $this->mailers[$name]->setFrom($this->config->get('mailer.from.address'), $this->config->get('mailer.from.name'));
-
-
+        // 设置全局 From
+        try {
+            $this->mailers[$name]->setFrom(
+                $this->config->get('mailer.from.address'),
+                $this->config->get('mailer.from.name')
+            );
+        } catch (Exception $e) {
+            throw new \Exception($e->getMessage());
+        }
 
         return $this->mailers[$name];
     }
@@ -76,11 +86,6 @@ class MailManager implements MailManagerInterface
     public function getDefaultDriver(): string
     {
         return $this->config->get('mailer.driver', $this->config->get('mailer.default'));
-    }
-
-    public function setConfig(string $name, mixed $value): array
-    {
-        return $this->config->set("mailer.{$name}", $value);
     }
 
     protected function getConfig(string $name): ?array

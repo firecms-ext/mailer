@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 /**
  * This file is part of FirecmsExt Mailer.
  *
@@ -9,42 +10,21 @@ declare(strict_types=1);
  * @contact  zhimengxingyun@klmis.cn
  * @license  https://github.com/firecms-ext/mailer/blob/master/LICENSE
  */
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+
 return [
-    /*
-    |--------------------------------------------------------------------------
-    | Default MailerInterface
-    |--------------------------------------------------------------------------
-    |
-    | This option controls the default mailer that is used to send any email
-    | messages sent by your application. Alternative mailers may be setup
-    | and used as needed; however, this mailer will be used by default.
-    |
-    */
 
     'default' => env('MAIL_MAILER', 'smtp'),
-
-    /*
-    |--------------------------------------------------------------------------
-    | MailerInterface Configurations
-    |--------------------------------------------------------------------------
-    |
-    | Here you may configure all of the mailers used by your application plus
-    | their respective settings. Several examples have been configured for
-    | you and you are free to add your own as your application requires.
-    |
-    | Laravel supports a variety of mail "transport" drivers to be used while
-    | sending an e-mail. You will specify which one you are using for your
-    | mailers below. You are free to add additional mailers as required.
-    |
-    | Supported: "smtp", "mail", "sendmail", "qmail"
-    |
-    */
+    'charset' => env('MAIL_CHARSET', PHPMailer::CHARSET_UTF8),
+    'debug' => env('MAIL_DEBUG', SMTP::DEBUG_SERVER),
 
     'mailers' => [
         'smtp' => [
             'host' => env('MAIL_HOST', 'smtp.mailgun.org'),
             'port' => (int)env('MAIL_PORT', 465),
-            'encryption' => strtolower(env('MAIL_ENCRYPTION', 'ssl')),
+            'encryption' => strtolower(env('MAIL_ENCRYPTION', PHPMailer::ENCRYPTION_SMTPS)),
             'username' => env('MAIL_USERNAME'),
             'password' => env('MAIL_PASSWORD'),
         ],
@@ -58,17 +38,6 @@ return [
         'qmail' => [
         ],
     ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Global "From" Address
-    |--------------------------------------------------------------------------
-    |
-    | You may wish for all e-mails sent by your application to be sent from
-    | the same address. Here, you may specify a name and address that is
-    | used globally for all e-mails that are sent by your application.
-    |
-    */
 
     'from' => [
         'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
