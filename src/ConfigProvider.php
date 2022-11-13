@@ -9,9 +9,11 @@ declare(strict_types=1);
  * @contact  zhimengxingyun@klmis.cn
  * @license  https://github.com/firecms-ext/mailer/blob/master/LICENSE
  */
+
 namespace FirecmsExt\Mailer;
 
 use FirecmsExt\Mailer\Commands\GenMailerCommand;
+use FirecmsExt\Mailer\Contracts\MailManagerInterface;
 
 class ConfigProvider
 {
@@ -19,6 +21,7 @@ class ConfigProvider
     {
         return [
             'dependencies' => [
+                MailManagerInterface::class => MailManager::class,
             ],
             'commands' => [
                 GenMailerCommand::class

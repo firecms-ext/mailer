@@ -12,8 +12,6 @@ class MailManager implements MailManagerInterface
 
     protected ConfigInterface $config;
 
-    protected array $mailers = [];
-
     public function __construct(ContainerInterface $container, ConfigInterface $config)
     {
         $this->container = $container;
