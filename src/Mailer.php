@@ -39,7 +39,7 @@ class Mailer implements MailerInterface
     }
 
     /**
-     * 目标.
+     * 收件人.
      * @throws \Exception
      */
     public function to(mixed $address, string $name = ''): static
