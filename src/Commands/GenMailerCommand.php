@@ -17,7 +17,8 @@ class GenMailerCommand extends GeneratorCommand
 {
     public function __construct()
     {
-        parent::__construct('gen:mailer');
+        parent::__construct('gen:mail');
+
         $this->setDescription('Create a new email class');
     }
 
