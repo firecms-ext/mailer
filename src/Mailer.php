@@ -12,38 +12,164 @@ declare(strict_types=1);
 
 namespace FirecmsExt\Mailer;
 
-use Closure;
 use FirecmsExt\Mailer\Contracts\MailableInterface;
 use FirecmsExt\Mailer\Contracts\MailerInterface;
 use Hyperf\Contract\ConfigInterface;
+use Hyperf\Utils\ApplicationContext;
+use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 
 class Mailer implements MailerInterface
 {
-
-    protected ConfigInterface $config;
+    protected PHPMailer $mailer;
 
     protected array $mailers = [];
 
-    public function __construct(ConfigInterface $config)
+    private ConfigInterface $config;
+
+    public function __construct(PHPMailer $mailer)
     {
-        $this->config = $config;
+        $this->mailer = $mailer;
+
+        $this->config = ApplicationContext::getContainer()->get(ConfigInterface::class);
     }
 
-    public function to(mixed $users): PendingMail
+
+    /**
+     * @throws \Exception
+     */
+    public function to(mixed $address): static
     {
-        // TODO: Implement to() method.
+        if (empty($address)) {
+            return $this;
+        }
+
+        try {
+            if (is_string($address)) {
+                $this->mailer->addAddress($address);
+            } elseif (is_array($address)) {
+                foreach ($address as $item) {
+                    if (is_array($item)) {
+                        $this->mailer->addAddress($item['address'] ?? $item['email'], $item['name'] ?? '');
+                    } elseif (is_object($item)) {
+                        $this->mailer->addAddress(@$item->address ?: @$item->email, @$item->name ?: '');
+                    } elseif (is_string($item)) {
+                        $this->mailer->addAddress($item);
+                    }
+                }
+            }
+        } catch (Exception $e) {
+            throw new \Exception($e->getMessage());
+        }
+
+        return $this;
     }
 
-    public function bcc(mixed $users): PendingMail
+    /**
+     * @throws \Exception
+     */
+    public function cc(mixed $address): static
     {
-        // TODO: Implement bcc() method.
+        if (empty($address)) {
+            return $this;
+        }
+
+        try {
+            if (is_string($address)) {
+                $this->mailer->addCC($address);
+            } elseif (is_array($address)) {
+                foreach ($address as $item) {
+                    if (is_array($item)) {
+                        $this->mailer->addCC($item['address'] ?? $item['email'], $item['name'] ?? '');
+                    } elseif (is_object($item)) {
+                        $this->mailer->addCC(@$item->address ?: @$item->email, @$item->name ?: '');
+                    } elseif (is_string($item)) {
+                        $this->mailer->addCC($item);
+                    }
+                }
+            }
+        } catch (Exception $e) {
+            throw new \Exception($e->getMessage());
+        }
+
+        return $this;
     }
 
-    public function send(MailableInterface $mailable, Closure|string $callback = null): void
+    /**
+     * @throws \Exception
+     */
+    public function bcc(mixed $address): static
     {
-        // TODO: Implement send() method.
+        if (empty($address)) {
+            return $this;
+        }
+
+        try {
+            if (is_string($address)) {
+                $this->mailer->addBCC($address);
+            } elseif (is_array($address)) {
+                foreach ($address as $item) {
+                    if (is_array($item)) {
+                        $this->mailer->addBCC($item['address'] ?? $item['email'], $item['name'] ?? '');
+                    } elseif (is_object($item)) {
+                        $this->mailer->addBCC(@$item->address ?: @$item->email, @$item->name ?: '');
+                    } elseif (is_string($item)) {
+                        $this->mailer->addBCC($item);
+                    }
+                }
+            }
+        } catch (Exception $e) {
+            throw new \Exception($e->getMessage());
+        }
+
+        return $this;
+    }
+
+    protected function subject(string $subject): static
+    {
+        $this->mailer->Subject = $subject;
+
+        return $this;
+    }
+
+    protected function body(string $body): static
+    {
+        $this->mailer->Body = $body;
+
+        return $this;
+    }
+
+    /**
+     * @throws \Exception
+     */
+    protected function fill(MailableInterface $mailable): static
+    {
+        try {
+            return $this->to($mailable->to)
+                ->cc($mailable->cc)
+                ->bcc($mailable->bcc)
+                ->subject($mailable->subject)
+                ->body($mailable->body);
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage());
+        }
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function send(MailableInterface $mailable): void
+    {
+        try {
+            go(function () use ($mailable) {
+                $this->fill($mailable);
+                $this->mailer->send();
+            });
+
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage());
+        }
     }
 
     public function mailer(?string $name = null, ?array $config = null): PHPMailer
@@ -140,5 +266,4 @@ class Mailer implements MailerInterface
 
         return $mailer;
     }
-
 }

@@ -9,7 +9,6 @@ declare(strict_types=1);
  * @contact  zhimengxingyun@klmis.cn
  * @license  https://github.com/firecms-ext/mailer/blob/master/LICENSE
  */
-
 namespace FirecmsExt\Mailer;
 
 use FirecmsExt\Mailer\Contracts\MailableInterface;
@@ -18,7 +17,6 @@ use FirecmsExt\Mailer\Contracts\MailManagerInterface;
 
 class MailManager implements MailManagerInterface
 {
-
     public function __call($method, $parameters)
     {
         return $this->mailer()->{$method}(...$parameters);
@@ -31,7 +29,6 @@ class MailManager implements MailManagerInterface
 
     public function to(mixed $address): static
     {
-
         return $this;
     }
 
