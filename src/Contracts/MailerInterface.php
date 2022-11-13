@@ -18,9 +18,5 @@ interface MailerInterface
 {
     public function to(mixed $address): static;
 
-    public function cc(mixed $address): static;
-
-    public function bcc(mixed $address): static;
-
     public function send(MailableInterface $mailable): void;
 }

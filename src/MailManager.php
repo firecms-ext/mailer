@@ -68,6 +68,8 @@ class MailManager implements MailManagerInterface
 
         $this->mailers[$name]->setFrom($this->config->get('mailer.from.address'), $this->config->get('mailer.from.name'));
 
+
+
         return $this->mailers[$name];
     }
 
