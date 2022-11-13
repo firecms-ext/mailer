@@ -2,7 +2,10 @@
 
 namespace FirecmsExt\Mailer;
 
-class Mailable
+use FirecmsExt\Mailer\Contracts\MailableInterface;
+use FirecmsExt\Mailer\Contracts\MailerInterface;
+
+class Mailable implements MailableInterface
 {
     /**
      * 寄件地址
@@ -38,4 +41,25 @@ class Mailable
      * 邮件内容.
      */
     public string $body = '';
+
+    public function to(object|array|string $address, ?string $name = null): static
+    {
+
+        return $this;
+    }
+
+    public function cc(object|array|string $address, ?string $name = null): static
+    {
+        return $this;
+    }
+
+    public function bcc(object|array|string $address, ?string $name = null): static
+    {
+        return $this;
+    }
+
+    public function send(MailerInterface $mailer)
+    {
+        // TODO: Implement send() method.
+    }
 }
