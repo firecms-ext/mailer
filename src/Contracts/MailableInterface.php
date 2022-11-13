@@ -17,4 +17,7 @@ namespace FirecmsExt\Mailer\Contracts;
  */
 interface MailableInterface
 {
+    public function subject(string $content): static;
+
+    public function body(string $content): static;
 }

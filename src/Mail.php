@@ -17,10 +17,10 @@ use FirecmsExt\Mailer\Contracts\MailManagerInterface;
 use Hyperf\Utils\ApplicationContext;
 
 /**
- * @method static PendingMail to(mixed $users)
- * @method static PendingMail cc(mixed $users)
- * @method static PendingMail bcc(mixed $users)
- * @method static bool|int send(MailableInterface $mailable)
+ * @method static MailManagerInterface to(mixed $users)
+ * @method static MailManagerInterface cc(mixed $users)
+ * @method static MailManagerInterface bcc(mixed $users)
+ * @method static void send(MailableInterface $mailable)
  */
 abstract class Mail
 {
@@ -31,9 +31,9 @@ abstract class Mail
         return $instance->{$method}(...$args);
     }
 
-    public static function mailer(string $name): PendingMail
+    public static function mailer(string $name): MailManagerInterface
     {
-        return new PendingMail(static::getManager()->get($name));
+        return static::getManager()->mailer($name);
     }
 
     protected static function getManager(): ?MailManagerInterface

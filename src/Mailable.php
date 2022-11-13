@@ -9,6 +9,7 @@ declare(strict_types=1);
  * @contact  zhimengxingyun@klmis.cn
  * @license  https://github.com/firecms-ext/mailer/blob/master/LICENSE
  */
+
 namespace FirecmsExt\Mailer;
 
 use FirecmsExt\Mailer\Contracts\MailableInterface;
@@ -17,7 +18,7 @@ use FirecmsExt\Mailer\Contracts\MailerInterface;
 class Mailable implements MailableInterface
 {
     /**
-     * 寄件地址
+     * 来源.
      */
     public array $from = [];
 
@@ -42,12 +43,12 @@ class Mailable implements MailableInterface
     public array $replyTo = [];
 
     /**
-     * 邮件主题.
+     * 主题.
      */
     public string $subject = '';
 
     /**
-     * 邮件内容.
+     * 内容.
      */
     public string $body = '';
 

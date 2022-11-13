@@ -16,5 +16,5 @@ use PHPMailer\PHPMailer\PHPMailer;
 
 interface MailManagerInterface
 {
-    public function mailer(?string $name = null, ?array $config = null): PHPMailer;
+    public function mailer(?string $name = null, ?array $config = null): MailerInterface;
 }

@@ -9,27 +9,19 @@ declare(strict_types=1);
  * @contact  zhimengxingyun@klmis.cn
  * @license  https://github.com/firecms-ext/mailer/blob/master/LICENSE
  */
-namespace FirecmsExt\Mailer\Contracts;
 
-use FirecmsExt\Mailer\PendingMail;
+namespace FirecmsExt\Mailer\Contracts;
 
 /**
  * 邮寄对象
  */
 interface MailerInterface
 {
-    /**
-     * 目标.
-     */
-    public function to(mixed $users): PendingMail;
+    public function to(mixed $address): static;
 
-    /**
-     * 加密抄送
-     */
-    public function bcc(mixed $users): PendingMail;
+    public function cc(mixed $address): static;
 
-    /**
-     * 发送邮件.
-     */
-    public function send(MailableInterface $mailable, \Closure|string $callback = null): mixed;
+    public function bcc(mixed $address): static;
+
+    public function send(MailableInterface $mailable): void;
 }
