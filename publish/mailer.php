@@ -228,9 +228,9 @@ return [
     |
     | 指定用于实现在黑名单中存储令牌行为的类。
     |
-    | 自定义存储类需要实现 `FirecmsExt\Jwt\Contracts\StorageInterface` 接口。
+    | 自定义存储类需要实现 `FirecmsExt\Mailer\Contracts\StorageInterface` 接口。
     |
     */
 
-    'blacklist_storage' => FirecmsExt\Jwt\Storage\HyperfCache::class,
+    'blacklist_storage' => FirecmsExt\Mailer\Storage\HyperfCache::class,
 ];
